@@ -224,8 +224,17 @@ switch ($action) {
         $end_date = trim($input['end_date'] ?? '');
 
         if (!empty($start_date) && !empty($end_date)) {  // when searching
-            $stmt = $pdo->prepare("SELECT * FROM transactions WHERE date_added BETWEEN ? AND ?");
+            $stmt = $pdo->prepare("SELECT * FROM transactions WHERE date_added BETWEEN ? AND ? ORDER BY date_added DESC");
             $stmt->execute([$start_date, $end_date]);
+
+        } else if (!empty($start_date) && empty($end_date)) {
+            $stmt = $pdo->prepare("SELECT * FROM transactions WHERE DATE(date_added) >= ? ORDER BY date_added DESC");
+            $stmt->execute([$start_date]);
+
+        } else if (empty($start_date) && !empty($end_date)) {
+            $stmt = $pdo->prepare("SELECT * FROM transactions WHERE DATE(date_added) <= ? ORDER BY date_added DESC");
+            $stmt->execute([$end_date]);
+
         } else {  // get all
             $stmt = $pdo->prepare("SELECT * FROM transactions ORDER BY date_added DESC");
             $stmt->execute();
@@ -579,4 +588,5 @@ if ($action === 'createMenuItem') {
 ob_end_clean();
 echo json_encode($response);
 exit;
+
 ?>
