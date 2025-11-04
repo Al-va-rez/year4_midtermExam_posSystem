@@ -227,11 +227,11 @@ switch ($action) {
             $stmt = $pdo->prepare("SELECT * FROM transactions WHERE date_added BETWEEN ? AND ? ORDER BY date_added DESC");
             $stmt->execute([$start_date, $end_date]);
 
-        } else if (!empty($start_date) && empty($end_date)) {
+        } else if (!empty($start_date) && empty($end_date)) { // all records starting from date
             $stmt = $pdo->prepare("SELECT * FROM transactions WHERE DATE(date_added) >= ? ORDER BY date_added DESC");
             $stmt->execute([$start_date]);
 
-        } else if (empty($start_date) && !empty($end_date)) {
+        } else if (empty($start_date) && !empty($end_date)) { // all records up to a date
             $stmt = $pdo->prepare("SELECT * FROM transactions WHERE DATE(date_added) <= ? ORDER BY date_added DESC");
             $stmt->execute([$end_date]);
 
@@ -590,3 +590,4 @@ echo json_encode($response);
 exit;
 
 ?>
+
